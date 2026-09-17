@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew checkstyle lint
 
   apk:
-    name: "Build PlayDebug APK"
+    name: "Build signed PlayRelease APK"
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -52,30 +52,58 @@ jobs:
           key: gradle-apk-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
       - name: Configure parallel build
         run: echo "org.gradle.parallel=true" >> local.properties
+      - name: Restore signing keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::Secret KEYSTORE_BASE64 is not set. Cannot sign a release build."
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > app/keystore
+          test -s app/keystore
       - name: Build
-        run: ./gradlew assemblePlayDebug
+        env:
+          STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          ./gradlew assemblePlayRelease \
+            -PreleaseStoreFile=keystore \
+            -PreleaseStorePassword="$STORE_PASSWORD" \
+            -PreleaseKeyAlias="$KEY_ALIAS" \
+            -PreleaseKeyPassword="$KEY_PASSWORD"
+      - name: Verify signature
+        run: |
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs app/build/outputs/apk/play/release/app-play-release.apk
       - name: Read version
         id: version
         run: |
-          VERSION=$(grep -m1 'versionCode' app/build.gradle | grep -oE '[0-9]+' | head -1)
           NAMED=$(grep -m1 'versionName' app/build.gradle | grep -oE '"[^"]+"' | tr -d '"')
-          echo "label=${NAMED}+${VERSION}-${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+          CODE=$(grep -m1 'versionCode' app/build.gradle | grep -oE '[0-9]+' | head -1)
+          echo "label=${NAMED}+${CODE}-${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: antennapod-custom-play-debug
-          path: app/build/outputs/apk/play/debug/app-play-debug.apk
+          name: antennapod-custom-play-release
+          path: app/build/outputs/apk/play/release/app-play-release.apk
       - name: Publish APK as release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete apk-latest --yes --cleanup-tag || true
-          gh release create apk-latest app/build/outputs/apk/play/debug/app-play-debug.apk \
+          gh release create apk-latest app/build/outputs/apk/play/release/app-play-release.apk \
             --title "Custom build ${{ steps.version.outputs.label }}" \
-            --notes "PlayDebug APK built from the custom branch.
+            --notes "Signed release APK built from the custom branch.
 
           Customizations on top of upstream develop:
           - Continue playing when opening the app (Settings > Playback > Playback control)
           - Scheduled playback speed during a set time of day
           - Mini player play/pause button centered in landscape
+          - Simplified Chinese translations for the settings above
 
-          Signed with the default debug key, so it installs over another debug build but not over the official release app."
+          Package name is de.danoeh.antennapod (release build, R8 minified), so the app
+          shows as AntennaPod with no development-version notice. It conflicts with an
+          official AntennaPod install and is signed with a private key that is not the
+          official one, so it cannot be upgraded from Play/F-Droid. Keep using this
+          release for future upgrades."
