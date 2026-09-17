@@ -378,6 +378,13 @@
     <string name="pref_theme_title_dark">深色</string>
     <string name="pref_episode_cache_unlimited">无限</string>
     <string name="pref_playback_speed_sum">自定义可用于变速播放的速度</string>
+    <string name="pref_playback_speed_schedule_title">定时切换播放速度</string>
+    <string name="pref_playback_speed_schedule_sum">在指定时段内自动使用另一个播放速度</string>
+    <string name="pref_playback_speed_schedule_time_title">时段</string>
+    <string name="pref_playback_speed_schedule_time_sum">%1$s 至 %2$s</string>
+    <string name="pref_playback_speed_schedule_speed_title">速度</string>
+    <string name="pref_autoPlayOnStart_title">打开应用时继续播放</string>
+    <string name="pref_autoPlayOnStart_sum">打开应用时，自动从上次中断的位置继续播放上一集</string>
     <string name="pref_feed_playback_speed_sum">此播客中单集开始音频播放时使用的速度</string>
     <string name="pref_feed_skip">自动跳过</string>
     <string name="pref_feed_skip_sum">跳过开头介绍和结尾致谢</string>
