@@ -40,6 +40,26 @@
                 android:key="prefPlaybackSpeedLauncher"
                 android:summary="@string/pref_playback_speed_sum"
                 android:title="@string/playback_speed"/>
+        <SwitchPreferenceCompat
+                android:defaultValue="false"
+                android:enabled="true"
+                android:key="prefPlaybackSpeedScheduleEnabled"
+                android:summary="@string/pref_playback_speed_schedule_sum"
+                android:title="@string/pref_playback_speed_schedule_title"/>
+        <Preference
+                android:dependency="prefPlaybackSpeedScheduleEnabled"
+                android:key="prefPlaybackSpeedScheduleTimeLauncher"
+                android:title="@string/pref_playback_speed_schedule_time_title"/>
+        <Preference
+                android:dependency="prefPlaybackSpeedScheduleEnabled"
+                android:key="prefPlaybackSpeedScheduleSpeedLauncher"
+                android:title="@string/pref_playback_speed_schedule_speed_title"/>
+        <SwitchPreferenceCompat
+                android:defaultValue="false"
+                android:enabled="true"
+                android:key="prefAutoPlayOnStart"
+                android:summary="@string/pref_autoPlayOnStart_sum"
+                android:title="@string/pref_autoPlayOnStart_title"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/reassign_hardware_buttons">

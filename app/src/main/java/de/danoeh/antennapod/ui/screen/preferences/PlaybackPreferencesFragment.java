@@ -4,22 +4,33 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import androidx.annotation.NonNull;
 import androidx.collection.ArrayMap;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.storage.preferences.UserPreferences;
 import de.danoeh.antennapod.ui.preferences.screen.AnimatedPreferenceFragment;
 import de.danoeh.antennapod.ui.screen.feed.preferences.SkipPreferenceDialog;
+import de.danoeh.antennapod.ui.screen.playback.TimeRangeDialog;
 import de.danoeh.antennapod.ui.screen.playback.VariableSpeedDialog;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class PlaybackPreferencesFragment extends AnimatedPreferenceFragment {
     private static final String PREF_PLAYBACK_SPEED_LAUNCHER = "prefPlaybackSpeedLauncher";
     private static final String PREF_PLAYBACK_REWIND_DELTA_LAUNCHER = "prefPlaybackRewindDeltaLauncher";
     private static final String PREF_PLAYBACK_FAST_FORWARD_DELTA_LAUNCHER = "prefPlaybackFastForwardDeltaLauncher";
+    private static final String PREF_PLAYBACK_SPEED_SCHEDULE_TIME_LAUNCHER =
+            "prefPlaybackSpeedScheduleTimeLauncher";
+    private static final String PREF_PLAYBACK_SPEED_SCHEDULE_SPEED_LAUNCHER =
+            "prefPlaybackSpeedScheduleSpeedLauncher";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -27,6 +38,7 @@ public class PlaybackPreferencesFragment extends AnimatedPreferenceFragment {
 
         setupPlaybackScreen();
         buildSmartMarkAsPlayedPreference();
+        buildPlaybackSpeedSchedulePreferences();
     }
 
     @Override
@@ -113,5 +125,84 @@ public class PlaybackPreferencesFragment extends AnimatedPreferenceFragment {
             }
         }
         pref.setEntries(entries);
+    }
+
+    private void buildPlaybackSpeedSchedulePreferences() {
+        Preference timePreference = requirePreference(PREF_PLAYBACK_SPEED_SCHEDULE_TIME_LAUNCHER);
+        timePreference.setOnPreferenceClickListener(preference -> {
+            TimeRangeDialog dialog = new TimeRangeDialog(requireContext(),
+                    UserPreferences.getPlaybackSpeedScheduleFrom(),
+                    UserPreferences.getPlaybackSpeedScheduleTo());
+            dialog.setOnDismissListener(d -> {
+                UserPreferences.setPlaybackSpeedScheduleFrom(dialog.getFrom());
+                UserPreferences.setPlaybackSpeedScheduleTo(dialog.getTo());
+                updatePlaybackSpeedScheduleSummaries();
+            });
+            dialog.show();
+            return true;
+        });
+
+        Preference speedPreference = requirePreference(PREF_PLAYBACK_SPEED_SCHEDULE_SPEED_LAUNCHER);
+        speedPreference.setOnPreferenceClickListener(preference -> {
+            showPlaybackSpeedScheduleSpeedDialog();
+            return true;
+        });
+
+        updatePlaybackSpeedScheduleSummaries();
+    }
+
+    private void showPlaybackSpeedScheduleSpeedDialog() {
+        final List<Float> speeds = new ArrayList<>(UserPreferences.getPlaybackSpeedArray());
+        final float currentSpeed = UserPreferences.getPlaybackSpeedScheduleSpeed();
+        if (!speeds.contains(currentSpeed)) {
+            speeds.add(currentSpeed);
+        }
+        Collections.sort(speeds);
+
+        String[] entries = new String[speeds.size()];
+        int checkedEntry = -1;
+        for (int i = 0; i < speeds.size(); i++) {
+            entries[i] = String.format(Locale.getDefault(), "%1$.2f", speeds.get(i));
+            if (speeds.get(i) == currentSpeed) {
+                checkedEntry = i;
+            }
+        }
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.pref_playback_speed_schedule_speed_title)
+                .setSingleChoiceItems(entries, checkedEntry, (dialog, which) -> {
+                    UserPreferences.setPlaybackSpeedScheduleSpeed(speeds.get(which));
+                    updatePlaybackSpeedScheduleSummaries();
+                    dialog.dismiss();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void updatePlaybackSpeedScheduleSummaries() {
+        requirePreference(PREF_PLAYBACK_SPEED_SCHEDULE_TIME_LAUNCHER)
+                .setSummary(getPlaybackSpeedScheduleTimeSummary());
+        requirePreference(PREF_PLAYBACK_SPEED_SCHEDULE_SPEED_LAUNCHER).setSummary(String.format(
+                Locale.getDefault(), "%1$.2f", UserPreferences.getPlaybackSpeedScheduleSpeed()));
+    }
+
+    private String getPlaybackSpeedScheduleTimeSummary() {
+        int from = UserPreferences.getPlaybackSpeedScheduleFrom();
+        int to = UserPreferences.getPlaybackSpeedScheduleTo();
+        if (from == to) {
+            return getString(R.string.sleep_timer_always);
+        }
+        String formattedFrom;
+        String formattedTo;
+        if (DateFormat.is24HourFormat(requireContext())) {
+            formattedFrom = String.format(Locale.getDefault(), "%02d:00", from);
+            formattedTo = String.format(Locale.getDefault(), "%02d:00", to);
+        } else {
+            formattedFrom = String.format(Locale.getDefault(), "%02d:00 %s", from % 12,
+                    from >= 12 ? "PM" : "AM");
+            formattedTo = String.format(Locale.getDefault(), "%02d:00 %s", to % 12,
+                    to >= 12 ? "PM" : "AM");
+        }
+        return getString(R.string.pref_playback_speed_schedule_time_sum, formattedFrom, formattedTo);
     }
 }

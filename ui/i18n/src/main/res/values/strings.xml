@@ -547,6 +547,13 @@
     <string name="pref_theme_title_dark">Dark</string>
     <string name="pref_episode_cache_unlimited">Unlimited</string>
     <string name="pref_playback_speed_sum">Customize the speeds available for variable speed playback</string>
+    <string name="pref_playback_speed_schedule_title">Scheduled playback speed</string>
+    <string name="pref_playback_speed_schedule_sum">Use a different speed during a set time of day</string>
+    <string name="pref_playback_speed_schedule_time_title">Time of day</string>
+    <string name="pref_playback_speed_schedule_time_sum">Between %1$s and %2$s</string>
+    <string name="pref_playback_speed_schedule_speed_title">Speed</string>
+    <string name="pref_autoPlayOnStart_title">Continue playing when opening the app</string>
+    <string name="pref_autoPlayOnStart_sum">Automatically resume the last episode from where you left off when the app is opened</string>
     <string name="pref_feed_playback_speed_sum">The speed to use when starting audio playback for episodes in this podcast</string>
     <string name="pref_feed_skip">Auto skip</string>
     <string name="pref_feed_skip_sum">Skip introductions and ending credits</string>

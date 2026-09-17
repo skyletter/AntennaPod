@@ -33,6 +33,7 @@ import de.danoeh.antennapod.model.feed.FeedCounter;
 import de.danoeh.antennapod.model.feed.FeedPreferences;
 import de.danoeh.antennapod.model.feed.SortOrder;
 import de.danoeh.antennapod.model.feed.SubscriptionsFilter;
+import de.danoeh.antennapod.model.playback.PlaybackSpeedSchedule;
 
 /**
  * Provides access to preferences set by the user in the settings screen. A
@@ -84,6 +85,7 @@ public abstract class UserPreferences {
     public static final String PREF_HARDWARE_FORWARD_BUTTON = "prefHardwareForwardButton";
     public static final String PREF_HARDWARE_PREVIOUS_BUTTON = "prefHardwarePreviousButton";
     public static final String PREF_FOLLOW_QUEUE = "prefFollowQueue";
+    public static final String PREF_AUTO_PLAY_ON_START = "prefAutoPlayOnStart";
     public static final String PREF_SKIP_KEEPS_EPISODE = "prefSkipKeepsEpisode";
     public static final String PREF_FAVORITE_KEEPS_EPISODE = "prefFavoriteKeepsEpisode";
     public static final String PREF_AUTO_DELETE = "prefAutoDelete";
@@ -122,6 +124,10 @@ public abstract class UserPreferences {
     // Mediaplayer
     private static final String PREF_PLAYBACK_SPEED = "prefPlaybackSpeed";
     public static final String PREF_PLAYBACK_SKIP_SILENCE = "prefSkipSilence";
+    private static final String PREF_PLAYBACK_SPEED_SCHEDULE_ENABLED = "prefPlaybackSpeedScheduleEnabled";
+    private static final String PREF_PLAYBACK_SPEED_SCHEDULE_FROM = "prefPlaybackSpeedScheduleFrom";
+    private static final String PREF_PLAYBACK_SPEED_SCHEDULE_TO = "prefPlaybackSpeedScheduleTo";
+    private static final String PREF_PLAYBACK_SPEED_SCHEDULE_SPEED = "prefPlaybackSpeedScheduleSpeed";
     private static final String PREF_FAST_FORWARD_SECS = "prefFastForwardSecs";
     private static final String PREF_REWIND_SECS = "prefRewindSecs";
     private static final String PREF_QUEUE_LOCKED = "prefQueueLocked";
@@ -432,6 +438,10 @@ public abstract class UserPreferences {
         return prefs.getBoolean(PREF_SKIP_KEEPS_EPISODE, true);
     }
 
+    public static boolean isAutoPlayOnStart() {
+        return prefs.getBoolean(PREF_AUTO_PLAY_ON_START, false);
+    }
+
     public static boolean shouldFavoriteKeepEpisode() {
         return prefs.getBoolean(PREF_FAVORITE_KEEPS_EPISODE, true);
     }
@@ -472,6 +482,36 @@ public abstract class UserPreferences {
 
     public static List<Float> getPlaybackSpeedArray() {
         return readPlaybackSpeedArray(prefs.getString(PREF_PLAYBACK_SPEED_ARRAY, null));
+    }
+
+    public static boolean isPlaybackSpeedScheduleEnabled() {
+        return prefs.getBoolean(PREF_PLAYBACK_SPEED_SCHEDULE_ENABLED, false);
+    }
+
+    public static int getPlaybackSpeedScheduleFrom() {
+        return prefs.getInt(PREF_PLAYBACK_SPEED_SCHEDULE_FROM, 22);
+    }
+
+    public static int getPlaybackSpeedScheduleTo() {
+        return prefs.getInt(PREF_PLAYBACK_SPEED_SCHEDULE_TO, 6);
+    }
+
+    public static float getPlaybackSpeedScheduleSpeed() {
+        try {
+            return Float.parseFloat(prefs.getString(PREF_PLAYBACK_SPEED_SCHEDULE_SPEED, "1.50"));
+        } catch (NumberFormatException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            return 1.50f;
+        }
+    }
+
+    @Nullable
+    public static PlaybackSpeedSchedule getPlaybackSpeedSchedule() {
+        if (!isPlaybackSpeedScheduleEnabled()) {
+            return null;
+        }
+        return new PlaybackSpeedSchedule(getPlaybackSpeedScheduleFrom(), getPlaybackSpeedScheduleTo(),
+                getPlaybackSpeedScheduleSpeed());
     }
 
     public static boolean shouldPauseForFocusLoss() {
@@ -651,6 +691,18 @@ public abstract class UserPreferences {
             jsonArray.put(speedFormat.format(speed));
         }
         prefs.edit().putString(PREF_PLAYBACK_SPEED_ARRAY, jsonArray.toString()).apply();
+    }
+
+    public static void setPlaybackSpeedScheduleFrom(int hourOfDay) {
+        prefs.edit().putInt(PREF_PLAYBACK_SPEED_SCHEDULE_FROM, hourOfDay).apply();
+    }
+
+    public static void setPlaybackSpeedScheduleTo(int hourOfDay) {
+        prefs.edit().putInt(PREF_PLAYBACK_SPEED_SCHEDULE_TO, hourOfDay).apply();
+    }
+
+    public static void setPlaybackSpeedScheduleSpeed(float speed) {
+        prefs.edit().putString(PREF_PLAYBACK_SPEED_SCHEDULE_SPEED, String.valueOf(speed)).apply();
     }
 
     public static boolean gpodnetNotificationsEnabled() {

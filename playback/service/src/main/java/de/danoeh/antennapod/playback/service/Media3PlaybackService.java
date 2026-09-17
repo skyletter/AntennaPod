@@ -41,6 +41,7 @@ import de.danoeh.antennapod.model.feed.FeedItem;
 import de.danoeh.antennapod.model.feed.FeedMedia;
 import de.danoeh.antennapod.model.feed.FeedPreferences;
 import de.danoeh.antennapod.model.feed.VolumeAdaptionSetting;
+import de.danoeh.antennapod.model.playback.PlaybackSpeedSchedule;
 import de.danoeh.antennapod.net.common.NetworkUtils;
 import de.danoeh.antennapod.net.sync.serviceinterface.SynchronizationQueue;
 import de.danoeh.antennapod.playback.base.MediaItemAdapter;
@@ -93,6 +94,7 @@ public class Media3PlaybackService extends MediaLibraryService {
     private Disposable positionObserverDisposable;
     private Disposable queueLoaderDisposable;
     private long lastPositionSaveTime = 0;
+    private float lastScheduledPlaybackSpeed = -1f;
     private SleepTimer sleepTimer;
     @Nullable
     private LoudnessEnhancer loudnessEnhancer = null;
@@ -430,6 +432,7 @@ public class Media3PlaybackService extends MediaLibraryService {
                             if (currentPlayable == null || player == null) {
                                 return;
                             }
+                            applyPlaybackSpeedScheduleIfChanged();
                             long position = player.getCurrentPosition();
                             long duration = player.getDuration();
                             float speed = player.getPlaybackParameters().speed;
@@ -458,6 +461,20 @@ public class Media3PlaybackService extends MediaLibraryService {
             positionObserverDisposable.dispose();
             positionObserverDisposable = null;
         }
+    }
+
+    private void applyPlaybackSpeedScheduleIfChanged() {
+        PlaybackSpeedSchedule schedule = PlaybackSpeedUtils.getActivePlaybackSpeedSchedule();
+        float scheduledSpeed = schedule == null ? -1f : schedule.getSpeed();
+        if (scheduledSpeed == lastScheduledPlaybackSpeed) {
+            return;
+        }
+        lastScheduledPlaybackSpeed = scheduledSpeed;
+        if (scheduledSpeed == player.getPlaybackParameters().speed) {
+            return;
+        }
+        PlaybackPreferences.setCurrentlyPlayingTemporaryPlaybackSpeed(FeedPreferences.SPEED_USE_GLOBAL);
+        player.setPlaybackSpeed(PlaybackSpeedUtils.getCurrentPlaybackSpeed(currentPlayable));
     }
 
     @OptIn(markerClass = UnstableApi.class)

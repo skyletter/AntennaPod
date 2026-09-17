@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,13 +21,16 @@ import de.danoeh.antennapod.activity.MainActivity;
 import de.danoeh.antennapod.event.PlayerStatusEvent;
 import de.danoeh.antennapod.event.playback.PlaybackPositionEvent;
 import de.danoeh.antennapod.event.playback.PlaybackServiceEvent;
+import de.danoeh.antennapod.model.feed.FeedMedia;
 import de.danoeh.antennapod.model.playback.MediaType;
 import de.danoeh.antennapod.model.playback.Playable;
+import de.danoeh.antennapod.net.common.NetworkUtils;
 import de.danoeh.antennapod.playback.service.PlaybackController;
 import de.danoeh.antennapod.playback.service.PlaybackService;
 import de.danoeh.antennapod.playback.service.PlaybackServiceStarter;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.preferences.PlaybackPreferences;
+import de.danoeh.antennapod.storage.preferences.UserPreferences;
 import de.danoeh.antennapod.ui.appstartintent.MediaButtonStarter;
 import de.danoeh.antennapod.ui.episodes.ImageResourceUtils;
 import de.danoeh.antennapod.ui.screen.playback.PlayButton;
@@ -51,6 +55,7 @@ public class ExternalPlayerFragment extends Fragment {
     private ProgressBar progressBar;
     private Disposable disposable;
     private Playable currentMedia;
+    private boolean autoPlayOnStartPending;
 
     public ExternalPlayerFragment() {
         super();
@@ -59,6 +64,7 @@ public class ExternalPlayerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        autoPlayOnStartPending = savedInstanceState == null && UserPreferences.isAutoPlayOnStart();
         View root = inflater.inflate(R.layout.external_player_fragment, container, false);
         imgvCover = root.findViewById(R.id.imgvCover);
         txtvTitle = root.findViewById(R.id.txtvTitle);
@@ -188,5 +194,31 @@ public class ExternalPlayerFragment extends Fragment {
             butPlay.setVisibility(View.VISIBLE);
             ((MainActivity) getActivity()).getBottomSheet().setLocked(false);
         }
+
+        if (autoPlayOnStartPending) {
+            autoPlayOnStartPending = false;
+            autoPlayOnStart(currentMedia);
+        }
+    }
+
+    private void autoPlayOnStart(Playable media) {
+        if (PlaybackService.isRunning || PlaybackService.isCasting()) {
+            return;
+        }
+        if (media.getMediaType() != MediaType.AUDIO) {
+            return;
+        }
+        if (media instanceof FeedMedia && needsStreamingConfirmation((FeedMedia) media)) {
+            return;
+        }
+        new PlaybackServiceStarter(getContext(), media)
+                .callEvenIfRunning(true)
+                .start();
+    }
+
+    private static boolean needsStreamingConfirmation(FeedMedia media) {
+        return !media.localFileAvailable()
+                && !URLUtil.isContentUrl(media.getStreamUrl())
+                && !NetworkUtils.isStreamingAllowed();
     }
 }
