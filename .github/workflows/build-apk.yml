@@ -62,6 +62,7 @@ jobs:
           fi
           echo "$KEYSTORE_BASE64" | base64 -d > app/keystore
           test -s app/keystore
+          cp app/keystore app-wearos/keystore
       - name: Build
         env:
           STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
