@@ -385,6 +385,11 @@
     <string name="pref_playback_speed_schedule_speed_title">速度</string>
     <string name="pref_autoPlayOnStart_title">打开应用时继续播放</string>
     <string name="pref_autoPlayOnStart_sum">打开应用时，自动从上次中断的位置继续播放上一集</string>
+    <string name="pref_autoPlayWaitForSync_title">等待同步完成后再播放</string>
+    <string name="pref_autoPlayWaitForSync_sum">延后自动播放，等同步结束后再开始，从而接着其他设备的进度播放。超过 15 秒则放弃等待</string>
+    <string name="pref_auto_sync_title">播放时同步</string>
+    <string name="pref_auto_sync_summary">播放过程中定时上报播放进度，让其他设备能接着正确的位置继续播放。仅在播放时运行</string>
+    <string name="pref_auto_sync_interval_title">同步间隔</string>
     <string name="pref_feed_playback_speed_sum">此播客中单集开始音频播放时使用的速度</string>
     <string name="pref_feed_skip">自动跳过</string>
     <string name="pref_feed_skip_sum">跳过开头介绍和结尾致谢</string>

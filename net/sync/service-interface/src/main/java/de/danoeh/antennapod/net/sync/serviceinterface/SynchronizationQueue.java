@@ -24,6 +24,11 @@ public abstract class SynchronizationQueue {
 
     public abstract void syncIfNotSyncedRecently();
 
+    /**
+     * Sync immediately, but at most once per given interval.
+     */
+    public abstract void syncWithMinimumInterval(long minimumIntervalMillis);
+
     public abstract void clear();
 
     public abstract void enqueueFeedAdded(String downloadUrl);

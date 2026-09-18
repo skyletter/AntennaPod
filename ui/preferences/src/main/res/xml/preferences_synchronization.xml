@@ -18,6 +18,20 @@
         android:title="@string/synchronization_sync_changes_title"
         android:summary="@string/synchronization_sync_summary"/>
 
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:enabled="true"
+        android:key="prefAutoSyncEnabled"
+        android:summary="@string/pref_auto_sync_summary"
+        android:title="@string/pref_auto_sync_title"/>
+
+    <de.danoeh.antennapod.ui.preferences.preference.MaterialListPreference
+        android:defaultValue="30"
+        android:dependency="prefAutoSyncEnabled"
+        android:entryValues="@array/auto_sync_interval_values"
+        android:key="prefAutoSyncInterval"
+        android:title="@string/pref_auto_sync_interval_title"/>
+
     <Preference
         android:key="pref_synchronization_force_full_sync"
         android:title="@string/synchronization_full_sync_title"

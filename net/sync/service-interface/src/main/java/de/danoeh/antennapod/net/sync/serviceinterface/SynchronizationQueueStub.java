@@ -20,6 +20,10 @@ public class SynchronizationQueueStub extends SynchronizationQueue {
     }
 
     @Override
+    public void syncWithMinimumInterval(long minimumIntervalMillis) {
+    }
+
+    @Override
     public void clear() {
     }
 

@@ -45,6 +45,12 @@ public class SynchronizationQueueImpl extends SynchronizationQueue {
         WorkManager.getInstance(context).enqueueUniqueWork(WORK_ID_SYNC, ExistingWorkPolicy.REPLACE, workRequest);
     }
 
+    public void syncWithMinimumInterval(long minimumIntervalMillis) {
+        if (System.currentTimeMillis() - SynchronizationSettings.getLastSyncAttempt() > minimumIntervalMillis) {
+            syncImmediately();
+        }
+    }
+
     public void fullSync() {
         LockingAsyncExecutor.executeLockedAsync(() -> {
             SynchronizationSettings.resetTimestamps();

@@ -86,6 +86,7 @@ public abstract class UserPreferences {
     public static final String PREF_HARDWARE_PREVIOUS_BUTTON = "prefHardwarePreviousButton";
     public static final String PREF_FOLLOW_QUEUE = "prefFollowQueue";
     public static final String PREF_AUTO_PLAY_ON_START = "prefAutoPlayOnStart";
+    public static final String PREF_AUTO_PLAY_WAIT_FOR_SYNC = "prefAutoPlayWaitForSync";
     public static final String PREF_SKIP_KEEPS_EPISODE = "prefSkipKeepsEpisode";
     public static final String PREF_FAVORITE_KEEPS_EPISODE = "prefFavoriteKeepsEpisode";
     public static final String PREF_AUTO_DELETE = "prefAutoDelete";
@@ -111,6 +112,10 @@ public abstract class UserPreferences {
     private static final String PREF_PROXY_PORT = "prefProxyPort";
     private static final String PREF_PROXY_USER = "prefProxyUser";
     private static final String PREF_PROXY_PASSWORD = "prefProxyPassword";
+
+    // Synchronization
+    private static final String PREF_AUTO_SYNC_ENABLED = "prefAutoSyncEnabled";
+    public static final String PREF_AUTO_SYNC_INTERVAL = "prefAutoSyncInterval";
 
     // Services
     private static final String PREF_GPODNET_NOTIFICATIONS = "pref_gpodnet_notifications";
@@ -440,6 +445,23 @@ public abstract class UserPreferences {
 
     public static boolean isAutoPlayOnStart() {
         return prefs.getBoolean(PREF_AUTO_PLAY_ON_START, false);
+    }
+
+    public static boolean isAutoPlayWaitForSync() {
+        return prefs.getBoolean(PREF_AUTO_PLAY_WAIT_FOR_SYNC, true);
+    }
+
+    public static boolean isAutoSyncEnabled() {
+        return prefs.getBoolean(PREF_AUTO_SYNC_ENABLED, true);
+    }
+
+    public static long getAutoSyncIntervalSeconds() {
+        try {
+            return Long.parseLong(prefs.getString(PREF_AUTO_SYNC_INTERVAL, "30"));
+        } catch (NumberFormatException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            return 30;
+        }
     }
 
     public static boolean shouldFavoriteKeepEpisode() {

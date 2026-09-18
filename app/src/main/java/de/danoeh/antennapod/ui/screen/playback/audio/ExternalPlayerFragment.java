@@ -2,6 +2,8 @@ package de.danoeh.antennapod.ui.screen.playback.audio;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,17 +21,20 @@ import de.danoeh.antennapod.BuildConfig;
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.activity.MainActivity;
 import de.danoeh.antennapod.event.PlayerStatusEvent;
+import de.danoeh.antennapod.event.SyncServiceEvent;
 import de.danoeh.antennapod.event.playback.PlaybackPositionEvent;
 import de.danoeh.antennapod.event.playback.PlaybackServiceEvent;
 import de.danoeh.antennapod.model.feed.FeedMedia;
 import de.danoeh.antennapod.model.playback.MediaType;
 import de.danoeh.antennapod.model.playback.Playable;
 import de.danoeh.antennapod.net.common.NetworkUtils;
+import de.danoeh.antennapod.net.sync.serviceinterface.SynchronizationQueue;
 import de.danoeh.antennapod.playback.service.PlaybackController;
 import de.danoeh.antennapod.playback.service.PlaybackService;
 import de.danoeh.antennapod.playback.service.PlaybackServiceStarter;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.preferences.PlaybackPreferences;
+import de.danoeh.antennapod.storage.preferences.SynchronizationSettings;
 import de.danoeh.antennapod.storage.preferences.UserPreferences;
 import de.danoeh.antennapod.ui.appstartintent.MediaButtonStarter;
 import de.danoeh.antennapod.ui.episodes.ImageResourceUtils;
@@ -47,6 +52,7 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public class ExternalPlayerFragment extends Fragment {
     public static final String TAG = "ExternalPlayerFragment";
+    private static final long AUTO_PLAY_SYNC_TIMEOUT_MS = 15000;
 
     private ImageView imgvCover;
     private TextView txtvTitle;
@@ -56,6 +62,10 @@ public class ExternalPlayerFragment extends Fragment {
     private Disposable disposable;
     private Playable currentMedia;
     private boolean autoPlayOnStartPending;
+    private boolean autoPlayWaitingForSync;
+    private boolean autoPlayAfterReload;
+    private final Handler autoPlayHandler = new Handler(Looper.getMainLooper());
+    private final Runnable autoPlaySyncTimeout = this::continueAutoPlayAfterSync;
 
     public ExternalPlayerFragment() {
         super();
@@ -139,6 +149,8 @@ public class ExternalPlayerFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "Fragment is about to be destroyed");
+        autoPlayHandler.removeCallbacks(autoPlaySyncTimeout);
+        autoPlayWaitingForSync = false;
         if (disposable != null) {
             disposable.dispose();
         }
@@ -156,7 +168,10 @@ public class ExternalPlayerFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::updateUi,
                         error -> Log.e(TAG, Log.getStackTraceString(error)),
-                        () -> ((MainActivity) getActivity()).setPlayerVisible(false));
+                        () -> {
+                            autoPlayAfterReload = false;
+                            ((MainActivity) getActivity()).setPlayerVisible(false);
+                        });
     }
 
     private void updateUi(Playable media) {
@@ -198,6 +213,9 @@ public class ExternalPlayerFragment extends Fragment {
         if (autoPlayOnStartPending) {
             autoPlayOnStartPending = false;
             autoPlayOnStart(currentMedia);
+        } else if (autoPlayAfterReload) {
+            autoPlayAfterReload = false;
+            startAutoPlay(currentMedia);
         }
     }
 
@@ -211,9 +229,41 @@ public class ExternalPlayerFragment extends Fragment {
         if (media instanceof FeedMedia && needsStreamingConfirmation((FeedMedia) media)) {
             return;
         }
+        if (UserPreferences.isAutoPlayWaitForSync() && SynchronizationSettings.isProviderConnected()) {
+            autoPlayWaitingForSync = true;
+            SynchronizationQueue.getInstance().syncImmediately();
+            autoPlayHandler.postDelayed(autoPlaySyncTimeout, AUTO_PLAY_SYNC_TIMEOUT_MS);
+            return;
+        }
+        startAutoPlay(media);
+    }
+
+    private void startAutoPlay(Playable media) {
         new PlaybackServiceStarter(getContext(), media)
                 .callEvenIfRunning(true)
                 .start();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSyncServiceEvent(SyncServiceEvent event) {
+        if (!autoPlayWaitingForSync) {
+            return;
+        }
+        if (event.getMessageResId() == R.string.sync_status_success
+                || event.getMessageResId() == R.string.sync_status_error) {
+            continueAutoPlayAfterSync();
+        }
+    }
+
+    private void continueAutoPlayAfterSync() {
+        if (!autoPlayWaitingForSync) {
+            return;
+        }
+        autoPlayWaitingForSync = false;
+        autoPlayHandler.removeCallbacks(autoPlaySyncTimeout);
+        // Reload, so that the position that was just pulled from the server is used
+        autoPlayAfterReload = true;
+        loadMediaInfo();
     }
 
     private static boolean needsStreamingConfirmation(FeedMedia media) {

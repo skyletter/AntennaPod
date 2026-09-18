@@ -2,6 +2,7 @@ package de.danoeh.antennapod.ui.preferences.screen.synchronization;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.format.DateUtils;
@@ -18,6 +19,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.core.text.HtmlCompat;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -35,6 +37,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import de.danoeh.antennapod.event.SyncServiceEvent;
 import de.danoeh.antennapod.storage.preferences.SynchronizationCredentials;
 import de.danoeh.antennapod.storage.preferences.SynchronizationSettings;
+import de.danoeh.antennapod.storage.preferences.UserPreferences;
 
 public class SynchronizationPreferencesFragment extends AnimatedPreferenceFragment {
     private static final String PREFERENCE_SYNCHRONIZATION_DESCRIPTION = "preference_synchronization_description";
@@ -83,6 +86,7 @@ public class SynchronizationPreferencesFragment extends AnimatedPreferenceFragme
 
     private void setupScreen() {
         final Activity activity = getActivity();
+        buildAutoSyncIntervalPreference();
         findPreference(PREFERENCE_GPODNET_SETLOGIN_INFORMATION)
                 .setOnPreferenceClickListener(preference -> {
                     AuthenticationDialog dialog = new AuthenticationDialog(activity,
@@ -113,6 +117,18 @@ public class SynchronizationPreferencesFragment extends AnimatedPreferenceFragme
             updateActionBar();
             return true;
         });
+    }
+
+    private void buildAutoSyncIntervalPreference() {
+        final Resources res = getResources();
+        ListPreference pref = findPreference(UserPreferences.PREF_AUTO_SYNC_INTERVAL);
+        String[] values = res.getStringArray(R.array.auto_sync_interval_values);
+        String[] entries = new String[values.length];
+        for (int x = 0; x < values.length; x++) {
+            int seconds = Integer.parseInt(values[x]);
+            entries[x] = res.getQuantityString(R.plurals.time_seconds_quantified, seconds, seconds);
+        }
+        pref.setEntries(entries);
     }
 
     private void updateScreen() {

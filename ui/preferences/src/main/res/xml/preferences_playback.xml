@@ -60,6 +60,13 @@
                 android:key="prefAutoPlayOnStart"
                 android:summary="@string/pref_autoPlayOnStart_sum"
                 android:title="@string/pref_autoPlayOnStart_title"/>
+        <SwitchPreferenceCompat
+                android:defaultValue="true"
+                android:dependency="prefAutoPlayOnStart"
+                android:enabled="true"
+                android:key="prefAutoPlayWaitForSync"
+                android:summary="@string/pref_autoPlayWaitForSync_sum"
+                android:title="@string/pref_autoPlayWaitForSync_title"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/reassign_hardware_buttons">

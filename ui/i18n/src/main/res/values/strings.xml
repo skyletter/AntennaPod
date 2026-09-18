@@ -554,6 +554,11 @@
     <string name="pref_playback_speed_schedule_speed_title">Speed</string>
     <string name="pref_autoPlayOnStart_title">Continue playing when opening the app</string>
     <string name="pref_autoPlayOnStart_sum">Automatically resume the last episode from where you left off when the app is opened</string>
+    <string name="pref_autoPlayWaitForSync_title">Wait for sync before playing</string>
+    <string name="pref_autoPlayWaitForSync_sum">Delay the automatic start until synchronizing finished, so playback continues at the position from your other device. Gives up after 15 seconds</string>
+    <string name="pref_auto_sync_title">Sync while playing</string>
+    <string name="pref_auto_sync_summary">Regularly send the playback position while an episode is playing, so other devices continue at the right spot. Only runs during playback</string>
+    <string name="pref_auto_sync_interval_title">Sync interval</string>
     <string name="pref_feed_playback_speed_sum">The speed to use when starting audio playback for episodes in this podcast</string>
     <string name="pref_feed_skip">Auto skip</string>
     <string name="pref_feed_skip_sum">Skip introductions and ending credits</string>

@@ -93,6 +93,7 @@ public class Media3PlaybackService extends MediaLibraryService {
     private Disposable mediaLoaderDisposable;
     private Disposable positionObserverDisposable;
     private Disposable queueLoaderDisposable;
+    private Disposable autoSyncDisposable;
     private long lastPositionSaveTime = 0;
     private float lastScheduledPlaybackSpeed = -1f;
     private SleepTimer sleepTimer;
@@ -322,8 +323,10 @@ public class Media3PlaybackService extends MediaLibraryService {
             if (PlaybackService.isRunning) {
                 lastPositionSaveTime = System.currentTimeMillis();
                 setupPositionObserver();
+                setupAutoSyncObserver();
             } else {
                 cancelPositionObserver();
+                cancelAutoSyncObserver();
                 saveCurrentPosition();
                 if (currentPlayable != null) {
                     SynchronizationQueue.getInstance().enqueueEpisodePlayed(currentPlayable, false);
@@ -391,6 +394,7 @@ public class Media3PlaybackService extends MediaLibraryService {
     public void onDestroy() {
         PlaybackService.isRunning = false;
         cancelPositionObserver();
+        cancelAutoSyncObserver();
         if (sleepTimer != null) {
             sleepTimer.stop();
             sleepTimer = null;
@@ -460,6 +464,26 @@ public class Media3PlaybackService extends MediaLibraryService {
         if (positionObserverDisposable != null) {
             positionObserverDisposable.dispose();
             positionObserverDisposable = null;
+        }
+    }
+
+    private void setupAutoSyncObserver() {
+        cancelAutoSyncObserver();
+        if (!UserPreferences.isAutoSyncEnabled()) {
+            return;
+        }
+        final long intervalSeconds = UserPreferences.getAutoSyncIntervalSeconds();
+        final long intervalMillis = TimeUnit.SECONDS.toMillis(intervalSeconds);
+        autoSyncDisposable = Schedulers.io().schedulePeriodicallyDirect(
+                () -> SynchronizationQueue.getInstance()
+                        .syncWithMinimumInterval(intervalMillis),
+                0, intervalSeconds, TimeUnit.SECONDS);
+    }
+
+    private void cancelAutoSyncObserver() {
+        if (autoSyncDisposable != null) {
+            autoSyncDisposable.dispose();
+            autoSyncDisposable = null;
         }
     }
 
