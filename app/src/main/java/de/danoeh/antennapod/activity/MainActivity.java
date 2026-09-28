@@ -70,6 +70,7 @@ import de.danoeh.antennapod.ui.screen.download.CompletedDownloadsFragment;
 import de.danoeh.antennapod.ui.screen.download.DownloadLogFragment;
 import de.danoeh.antennapod.ui.screen.drawer.BottomNavigation;
 import de.danoeh.antennapod.ui.screen.drawer.NavDrawerFragment;
+import de.danoeh.antennapod.ui.screen.drawer.NavListAdapter;
 import de.danoeh.antennapod.ui.screen.drawer.NavigationNames;
 import de.danoeh.antennapod.ui.screen.episode.ItemPagerFragment;
 import de.danoeh.antennapod.ui.screen.feed.FeedItemlistFragment;
@@ -466,6 +467,10 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     }
 
     public void loadFragment(String tag, Bundle args) {
+        if (NavListAdapter.GO_TO_LAUNCHER_TAG.equals(tag)) {
+            moveTaskToBack(true);
+            return;
+        }
         NavDrawerFragment.saveLastNavFragment(this, tag);
         if (bottomNavigation != null) {
             bottomNavigation.updateSelectedItem(tag);

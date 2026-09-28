@@ -11,6 +11,7 @@
         <item>FavoritesFragment</item>
         <item>StatisticsFragment</item>
         <item>AddFeedFragment</item>
+        <item>GoToLauncher</item>
         <item>SubscriptionList</item>
     </string-array>
 </resources>

@@ -51,6 +51,12 @@ public class NavListAdapter extends RecyclerView.Adapter<NavListAdapter.Holder>
      */
     public static final String SUBSCRIPTION_LIST_TAG = "SubscriptionList";
 
+    /**
+     * a tag used as a placeholder for an entry that moves the app to the background,
+     * returning to the device home screen. This tag doesn't correspond to any fragment.
+     */
+    public static final String GO_TO_LAUNCHER_TAG = "GoToLauncher";
+
     private final List<String> fragmentTags = new ArrayList<>();
     private final ItemAccess itemAccess;
     private final WeakReference<Activity> activity;

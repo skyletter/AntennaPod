@@ -560,8 +560,6 @@
     <string name="pref_auto_sync_summary">Regularly send the playback position while an episode is playing, so other devices continue at the right spot. Only runs during playback</string>
     <string name="pref_auto_sync_interval_title">Sync interval</string>
     <string name="go_to_launcher_label">Home screen</string>
-    <string name="pref_bottom_nav_show_launcher_title">Show go-to-home-screen button</string>
-    <string name="pref_bottom_nav_show_launcher_summary">Adds an entry to the bottom navigation that returns to the device home screen. Only shown in landscape, where the navigation bar has room for it; otherwise it is in the overflow menu</string>
     <string name="pref_feed_playback_speed_sum">The speed to use when starting audio playback for episodes in this podcast</string>
     <string name="pref_feed_skip">Auto skip</string>
     <string name="pref_feed_skip_sum">Skip introductions and ending credits</string>

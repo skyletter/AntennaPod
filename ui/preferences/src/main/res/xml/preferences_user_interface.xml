@@ -68,11 +68,6 @@
                 android:summary="@string/bottom_navigation_summary"
                 android:defaultValue="true"
                 android:key="prefBottomNavigation" />
-        <SwitchPreferenceCompat
-                android:key="prefBottomNavShowLauncher"
-                android:title="@string/pref_bottom_nav_show_launcher_title"
-                android:summary="@string/pref_bottom_nav_show_launcher_summary"
-                android:defaultValue="true"/>
         <Preference
                 android:key="prefHiddenDrawerItems"
                 android:summary="@string/pref_nav_drawer_items_sum"

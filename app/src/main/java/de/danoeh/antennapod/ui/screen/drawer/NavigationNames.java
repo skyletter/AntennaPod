@@ -37,6 +37,8 @@ public abstract class NavigationNames {
                 return R.drawable.ic_add;
             case FavoritesFragment.TAG:
                 return R.drawable.ic_star;
+            case NavListAdapter.GO_TO_LAUNCHER_TAG:
+                return R.drawable.ic_exit_to_app;
             default:
                 return 0;
         }
@@ -64,6 +66,8 @@ public abstract class NavigationNames {
                 return R.string.add_feed_label;
             case FavoritesFragment.TAG:
                 return R.string.favorite_episodes_label;
+            case NavListAdapter.GO_TO_LAUNCHER_TAG:
+                return R.string.go_to_launcher_label;
             case NavListAdapter.SUBSCRIPTION_LIST_TAG:
                 return R.string.subscriptions_list_label;
             default:
@@ -120,6 +124,8 @@ public abstract class NavigationNames {
                 return R.id.bottom_navigation_subscriptions;
             case StatisticsFragment.TAG:
                 return R.id.bottom_navigation_statistics;
+            case NavListAdapter.GO_TO_LAUNCHER_TAG:
+                return R.id.bottom_navigation_go_to_launcher;
             case HomeFragment.TAG: // fall-through
             default:
                 return R.id.bottom_navigation_home;
@@ -145,6 +151,8 @@ public abstract class NavigationNames {
             return SubscriptionFragment.TAG;
         } else if (id == R.id.bottom_navigation_statistics) {
             return StatisticsFragment.TAG;
+        } else if (id == R.id.bottom_navigation_go_to_launcher) {
+            return NavListAdapter.GO_TO_LAUNCHER_TAG;
         } else if (id == R.id.bottom_navigation_home) {
             return HomeFragment.TAG;
         }

@@ -63,7 +63,6 @@ public abstract class UserPreferences {
     public static final String PREF_SUBSCRIPTION_TITLE = "prefSubscriptionTitle";
     public static final String PREF_BACK_OPENS_DRAWER = "prefBackButtonOpensDrawer";
     public static final String PREF_BOTTOM_NAVIGATION = "prefBottomNavigation";
-    public static final String PREF_BOTTOM_NAV_SHOW_LAUNCHER = "prefBottomNavShowLauncher";
     private static final String PREF_PARENTAL_CONTROL_PASSWORD = "prefParentalControlPassword";
     public static final String PREF_PARENTAL_CONTROL_ENABLED = "prefParentalControlEnabled";
     public static final String PREF_PARENTAL_CONTROL_REQUIRE_SUBSCRIBE = "prefParentalControlRequireSubscribe";
@@ -861,10 +860,6 @@ public abstract class UserPreferences {
 
     public static void setBottomNavigationEnabled(boolean enabled) {
         prefs.edit().putBoolean(PREF_BOTTOM_NAVIGATION, enabled).apply();
-    }
-
-    public static boolean isBottomNavShowLauncher() {
-        return prefs.getBoolean(PREF_BOTTOM_NAV_SHOW_LAUNCHER, true);
     }
 
     public static boolean timeRespectsSpeed() {

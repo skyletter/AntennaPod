@@ -49,25 +49,16 @@ public class BottomNavigation {
         ViewUtils.doOnApplyWindowInsets(bottomNavigationView, (view, insets, initialPadding) -> insets);
     }
 
-    private int getMaxItemCountForOrientation() {
-        boolean landscape = context.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
-        return Math.min(landscape ? MAX_ITEMS_LANDSCAPE : MAX_ITEMS_PORTRAIT,
+    private int getMaxItemCountForScreen() {
+        Configuration config = context.getResources().getConfiguration();
+        int smallerSideDp = Math.min(config.screenWidthDp, config.screenHeightDp);
+        boolean wide = config.orientation == Configuration.ORIENTATION_LANDSCAPE || smallerSideDp >= 400;
+        return Math.min(wide ? MAX_ITEMS_LANDSCAPE : MAX_ITEMS_PORTRAIT,
                 bottomNavigationView.getMaxItemCount());
     }
 
-    private boolean showsGoToLauncher() {
-        return UserPreferences.isBottomNavShowLauncher() && getMaxItemCountForOrientation() >= 6;
-    }
-
     private int getNavItemCount() {
-        return showsGoToLauncher() ? getMaxItemCountForOrientation() - 2 : getMaxItemCountForOrientation() - 1;
-    }
-
-    private void addGoToLauncherItem(Menu menu) {
-        MenuItem goToLauncherItem = menu.add(0, R.id.bottom_navigation_go_to_launcher, 0,
-                context.getString(R.string.go_to_launcher_label));
-        goToLauncherItem.setIcon(R.drawable.ic_exit_to_app);
+        return getMaxItemCountForScreen() - 1;
     }
 
     private void goToLauncher() {
@@ -92,9 +83,6 @@ public class BottomNavigation {
             MenuItem item = menu.add(0, NavigationNames.getBottomNavigationItemId(tag),
                     0, context.getString(NavigationNames.getShortLabel(tag)));
             item.setIcon(NavigationNames.getDrawable(tag));
-        }
-        if (showsGoToLauncher()) {
-            addGoToLauncherItem(menu);
         }
         MenuItem moreItem = menu.add(0, R.id.bottom_navigation_more, 0, context.getString(R.string.overflow_more));
         moreItem.setIcon(R.drawable.dots_vertical);
