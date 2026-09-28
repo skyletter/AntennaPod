@@ -391,6 +391,7 @@
     <string name="pref_auto_sync_summary">播放过程中定时上报播放进度，让其他设备能接着正确的位置继续播放。仅在播放时运行</string>
     <string name="pref_auto_sync_interval_title">同步间隔</string>
     <string name="go_to_launcher_label">返回桌面</string>
+    <string name="go_to_launcher_label_short">返回桌面</string>
     <string name="pref_feed_playback_speed_sum">此播客中单集开始音频播放时使用的速度</string>
     <string name="pref_feed_skip">自动跳过</string>
     <string name="pref_feed_skip_sum">跳过开头介绍和结尾致谢</string>

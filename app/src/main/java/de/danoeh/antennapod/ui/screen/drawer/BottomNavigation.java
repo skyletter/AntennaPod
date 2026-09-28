@@ -80,9 +80,15 @@ public class BottomNavigation {
         int navItemCount = getNavItemCount();
         for (int i = 0; i < drawerItems.size() && i < navItemCount; i++) {
             String tag = drawerItems.get(i);
+            int shortLabel = NavigationNames.getShortLabel(tag);
+            int icon = NavigationNames.getDrawable(tag);
+            if (shortLabel == 0 || icon == 0) {
+                Log.d(TAG, "Skipping navigation item without label or icon: " + tag);
+                continue;
+            }
             MenuItem item = menu.add(0, NavigationNames.getBottomNavigationItemId(tag),
-                    0, context.getString(NavigationNames.getShortLabel(tag)));
-            item.setIcon(NavigationNames.getDrawable(tag));
+                    0, context.getString(shortLabel));
+            item.setIcon(icon);
         }
         MenuItem moreItem = menu.add(0, R.id.bottom_navigation_more, 0, context.getString(R.string.overflow_more));
         moreItem.setIcon(R.drawable.dots_vertical);

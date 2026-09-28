@@ -97,6 +97,8 @@ public abstract class NavigationNames {
                 return R.string.add_feed_label_short;
             case FavoritesFragment.TAG:
                 return R.string.favorite_episodes_label_short;
+            case NavListAdapter.GO_TO_LAUNCHER_TAG:
+                return R.string.go_to_launcher_label_short;
             case NavListAdapter.SUBSCRIPTION_LIST_TAG:
                 return R.string.subscriptions_list_label;
             default:

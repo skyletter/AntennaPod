@@ -560,6 +560,7 @@
     <string name="pref_auto_sync_summary">Regularly send the playback position while an episode is playing, so other devices continue at the right spot. Only runs during playback</string>
     <string name="pref_auto_sync_interval_title">Sync interval</string>
     <string name="go_to_launcher_label">Home screen</string>
+    <string name="go_to_launcher_label_short">Launcher</string>
     <string name="pref_feed_playback_speed_sum">The speed to use when starting audio playback for episodes in this podcast</string>
     <string name="pref_feed_skip">Auto skip</string>
     <string name="pref_feed_skip_sum">Skip introductions and ending credits</string>
