@@ -390,6 +390,9 @@
     <string name="pref_auto_sync_title">播放时同步</string>
     <string name="pref_auto_sync_summary">播放过程中定时上报播放进度，让其他设备能接着正确的位置继续播放。仅在播放时运行</string>
     <string name="pref_auto_sync_interval_title">同步间隔</string>
+    <string name="go_to_launcher_label">返回桌面</string>
+    <string name="pref_bottom_nav_show_launcher_title">底部导航显示「返回桌面」</string>
+    <string name="pref_bottom_nav_show_launcher_summary">在底部导航里加一个返回桌面的按钮。仅横屏显示（竖屏空间不够），竖屏时也可以在「更多」菜单里找到它</string>
     <string name="pref_feed_playback_speed_sum">此播客中单集开始音频播放时使用的速度</string>
     <string name="pref_feed_skip">自动跳过</string>
     <string name="pref_feed_skip_sum">跳过开头介绍和结尾致谢</string>

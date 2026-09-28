@@ -1,6 +1,9 @@
 package de.danoeh.antennapod.ui.screen.drawer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -32,6 +35,8 @@ import java.util.List;
 
 public class BottomNavigation {
     private static final String TAG = "BottomNavigation";
+    private static final int MAX_ITEMS_PORTRAIT = 5;
+    private static final int MAX_ITEMS_LANDSCAPE = 6;
 
     private final BottomNavigationView bottomNavigationView;
     private final Context context;
@@ -44,18 +49,52 @@ public class BottomNavigation {
         ViewUtils.doOnApplyWindowInsets(bottomNavigationView, (view, insets, initialPadding) -> insets);
     }
 
+    private int getMaxItemCountForOrientation() {
+        boolean landscape = context.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        return Math.min(landscape ? MAX_ITEMS_LANDSCAPE : MAX_ITEMS_PORTRAIT,
+                bottomNavigationView.getMaxItemCount());
+    }
+
+    private boolean showsGoToLauncher() {
+        return UserPreferences.isBottomNavShowLauncher() && getMaxItemCountForOrientation() >= 6;
+    }
+
+    private int getNavItemCount() {
+        return showsGoToLauncher() ? getMaxItemCountForOrientation() - 2 : getMaxItemCountForOrientation() - 1;
+    }
+
+    private void addGoToLauncherItem(Menu menu) {
+        MenuItem goToLauncherItem = menu.add(0, R.id.bottom_navigation_go_to_launcher, 0,
+                context.getString(R.string.go_to_launcher_label));
+        goToLauncherItem.setIcon(R.drawable.ic_exit_to_app);
+    }
+
+    private void goToLauncher() {
+        if (context instanceof Activity) {
+            ((Activity) context).moveTaskToBack(true);
+        } else {
+            Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
+            launcherIntent.addCategory(Intent.CATEGORY_HOME);
+            context.startActivity(launcherIntent);
+        }
+    }
+
     public void buildMenu() {
         List<String> drawerItems = UserPreferences.getVisibleDrawerItemOrder();
         drawerItems.remove(NavListAdapter.SUBSCRIPTION_LIST_TAG);
 
         Menu menu = bottomNavigationView.getMenu();
         menu.clear();
-        int maxItems = Math.min(5, bottomNavigationView.getMaxItemCount());
-        for (int i = 0; i < drawerItems.size() && i < maxItems - 1; i++) {
+        int navItemCount = getNavItemCount();
+        for (int i = 0; i < drawerItems.size() && i < navItemCount; i++) {
             String tag = drawerItems.get(i);
             MenuItem item = menu.add(0, NavigationNames.getBottomNavigationItemId(tag),
                     0, context.getString(NavigationNames.getShortLabel(tag)));
             item.setIcon(NavigationNames.getDrawable(tag));
+        }
+        if (showsGoToLauncher()) {
+            addGoToLauncherItem(menu);
         }
         MenuItem moreItem = menu.add(0, R.id.bottom_navigation_more, 0, context.getString(R.string.overflow_more));
         moreItem.setIcon(R.drawable.dots_vertical);
@@ -87,6 +126,9 @@ public class BottomNavigation {
         if (item.getItemId() == R.id.bottom_navigation_more) {
             showBottomNavigationMorePopup();
             return false;
+        } else if (item.getItemId() == R.id.bottom_navigation_go_to_launcher) {
+            goToLauncher();
+            return false;
         } else {
             onItemSelected(item.getItemId());
             return true;
@@ -98,13 +140,18 @@ public class BottomNavigation {
         drawerItems.remove(NavListAdapter.SUBSCRIPTION_LIST_TAG);
 
         final List<MenuItem> popupMenuItems = new ArrayList<>();
-        int maxItems = Math.min(5, bottomNavigationView.getMaxItemCount());
-        for (int i = maxItems - 1; i < drawerItems.size(); i++) {
+        for (int i = getNavItemCount(); i < drawerItems.size(); i++) {
             String tag = drawerItems.get(i);
             MenuItem item = new MenuBuilder(context).add(0, NavigationNames.getBottomNavigationItemId(tag),
                     0, context.getString(NavigationNames.getLabel(tag)));
             item.setIcon(NavigationNames.getDrawable(tag));
             popupMenuItems.add(item);
+        }
+        if (!showsGoToLauncher()) {
+            MenuItem goToLauncherItem = new MenuBuilder(context).add(0, R.id.bottom_navigation_go_to_launcher,
+                    0, context.getString(R.string.go_to_launcher_label));
+            goToLauncherItem.setIcon(R.drawable.ic_exit_to_app);
+            popupMenuItems.add(goToLauncherItem);
         }
         MenuItem customizeItem = new MenuBuilder(context).add(0, R.id.bottom_navigation_customize,
                 0, context.getString(R.string.pref_nav_drawer_items_title));
@@ -124,6 +171,8 @@ public class BottomNavigation {
             int itemId = popupMenuItems.get(position).getItemId();
             if (itemId == R.id.bottom_navigation_customize) {
                 new DrawerPreferencesDialog(context, this::buildMenu).show();
+            } else if (itemId == R.id.bottom_navigation_go_to_launcher) {
+                goToLauncher();
             } else {
                 onItemSelected(itemId);
             }
