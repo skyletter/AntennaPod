@@ -544,6 +544,11 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
             drawerToggle.onConfigurationChanged(newConfig);
         }
         setNavDrawerSize();
+        if (bottomNavigation != null) {
+            // configChanges swallows orientation changes, so the menu must be rebuilt here
+            bottomNavigation.buildMenu();
+            bottomNavigation.updateSelectedItem(NavDrawerFragment.getLastNavFragment(this));
+        }
 
         @StyleRes int requiredTheme = ThemeSwitcher.getNoTitleTheme(this);
         if (requiredTheme != lastTheme) {
