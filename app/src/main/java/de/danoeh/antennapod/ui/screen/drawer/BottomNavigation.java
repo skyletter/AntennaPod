@@ -135,12 +135,6 @@ public class BottomNavigation {
             item.setIcon(NavigationNames.getDrawable(tag));
             popupMenuItems.add(item);
         }
-        if (!showsGoToLauncher()) {
-            MenuItem goToLauncherItem = new MenuBuilder(context).add(0, R.id.bottom_navigation_go_to_launcher,
-                    0, context.getString(R.string.go_to_launcher_label));
-            goToLauncherItem.setIcon(R.drawable.ic_exit_to_app);
-            popupMenuItems.add(goToLauncherItem);
-        }
         MenuItem customizeItem = new MenuBuilder(context).add(0, R.id.bottom_navigation_customize,
                 0, context.getString(R.string.pref_nav_drawer_items_title));
         customizeItem.setIcon(R.drawable.ic_pencil);
