@@ -56,12 +56,12 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="@dimen/bottom_nav_height"
         app:itemTextAppearanceInactive="@style/TextBottomNav"
         app:itemTextAppearanceActive="@style/TextBottomNav"
         app:activeIndicatorLabelPadding="0dp"
-        app:itemPaddingTop="12dp"
-        app:itemPaddingBottom="4dp"
+        app:itemPaddingTop="@dimen/bottom_nav_item_padding_top"
+        app:itemPaddingBottom="@dimen/bottom_nav_item_padding_bottom"
         app:labelVisibilityMode="labeled" />
 
     <View

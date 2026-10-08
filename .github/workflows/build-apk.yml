@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew checkstyle lint
 
   apk:
-    name: "Build signed PlayRelease APK"
+    name: "Build signed release APKs"
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -69,7 +69,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          ./gradlew assemblePlayRelease \
+          ./gradlew :app:assemblePlayRelease :app:assembleCarRelease \
             -PreleaseStoreFile=keystore \
             -PreleaseStorePassword="$STORE_PASSWORD" \
             -PreleaseKeyAlias="$KEY_ALIAS" \
@@ -78,6 +78,7 @@ jobs:
         run: |
           APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
           "$APKSIGNER" verify --print-certs app/build/outputs/apk/play/release/app-play-release.apk
+          "$APKSIGNER" verify --print-certs app/build/outputs/apk/car/release/app-car-release.apk
       - name: Read version
         id: version
         run: |
@@ -86,25 +87,36 @@ jobs:
           echo "label=${NAMED}+${CODE}-${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: antennapod-custom-play-release
-          path: app/build/outputs/apk/play/release/app-play-release.apk
+          name: antennapod-custom-release
+          path: |
+            app/build/outputs/apk/play/release/app-play-release.apk
+            app/build/outputs/apk/car/release/app-car-release.apk
       - name: Publish APK as release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete apk-latest --yes --cleanup-tag || true
-          gh release create apk-latest app/build/outputs/apk/play/release/app-play-release.apk \
+          gh release create apk-latest \
+            app/build/outputs/apk/play/release/app-play-release.apk \
+            app/build/outputs/apk/car/release/app-car-release.apk \
             --title "Custom build ${{ steps.version.outputs.label }}" \
-            --notes "Signed release APK built from the custom branch.
+            --notes "Signed release APKs built from the custom branch.
+
+          Two variants, both with package name de.danoeh.antennapod (R8 minified,
+          shows as AntennaPod with no development-version notice):
+          - app-play-release.apk — phone UI, install on your phone
+          - app-car-release.apk  — car UI with a taller bottom bar, larger player
+            buttons and larger navigation labels, install on the head unit
+
+          The two variants conflict with each other (same package name) and with an
+          official AntennaPod install, and they are signed with a private key that is
+          not the official one, so they cannot be upgraded from Play/F-Droid. Keep
+          using this release for future upgrades.
 
           Customizations on top of upstream develop:
           - Continue playing when opening the app (Settings > Playback > Playback control)
           - Scheduled playback speed during a set time of day
           - Mini player play/pause button centered in landscape
-          - Simplified Chinese translations for the settings above
-
-          Package name is de.danoeh.antennapod (release build, R8 minified), so the app
-          shows as AntennaPod with no development-version notice. It conflicts with an
-          official AntennaPod install and is signed with a private key that is not the
-          official one, so it cannot be upgraded from Play/F-Droid. Keep using this
-          release for future upgrades."
+          - Go-to-home-screen entry in the bottom navigation (reorderable via
+            Settings > Navigation / the overflow menu)
+          - Simplified Chinese translations for the settings above"

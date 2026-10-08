@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_nav_height">88dp</dimen>
+    <dimen name="bottom_nav_item_padding_top">16dp</dimen>
+    <dimen name="bottom_nav_item_padding_bottom">8dp</dimen>
+    <dimen name="bottom_nav_text_size">15sp</dimen>
+    <dimen name="mini_player_play_button_width">72dp</dimen>
+    <dimen name="external_player_height">88dp</dimen>
+    <dimen name="audioplayer_playercontrols_length">64dp</dimen>
+    <dimen name="audioplayer_playercontrols_length_big">88dp</dimen>
+    <dimen name="audioplayer_playercontrols_margin">16dp</dimen>
+</resources>

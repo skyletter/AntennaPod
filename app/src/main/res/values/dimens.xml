@@ -4,4 +4,8 @@
     <!-- Should match with @dimen/m3_navigation_drawer_layout_corner_size -->
     <dimen name="drawer_corner_size">16dp</dimen>
     <dimen name="floating_select_menu_height">112dp</dimen>
+    <dimen name="bottom_nav_height">64dp</dimen>
+    <dimen name="bottom_nav_item_padding_top">12dp</dimen>
+    <dimen name="bottom_nav_item_padding_bottom">4dp</dimen>
+    <dimen name="mini_player_play_button_width">52dp</dimen>
 </resources>

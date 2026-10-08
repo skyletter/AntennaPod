@@ -57,7 +57,7 @@
 
         <de.danoeh.antennapod.ui.screen.playback.PlayButton
             android:id="@+id/butPlay"
-            android:layout_width="52dp"
+            android:layout_width="@dimen/mini_player_play_button_width"
             android:layout_height="match_parent"
             android:contentDescription="@string/pause_label"
             android:background="?attr/selectableItemBackground"
