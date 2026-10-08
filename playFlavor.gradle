@@ -7,8 +7,5 @@ android {
         play {
             dimension "market"
         }
-        car {
-            dimension "market"
-        }
     }
 }

@@ -16,6 +16,17 @@ android {
         versionName "3.12.1"
     }
 
+    productFlavors {
+        // Car head units report a huge dp area (a 1920x720 panel at 160dpi is
+        // 1920x720dp), so this flavor ships larger touch targets via its own
+        // resource overrides in src/car/res. Library modules only have the
+        // free/play variants, so their free variant is used as the fallback.
+        car {
+            dimension "market"
+            matchingFallbacks += ["free"]
+        }
+    }
+
     signingConfigs {
         releaseConfig {
             enableV1Signing true
