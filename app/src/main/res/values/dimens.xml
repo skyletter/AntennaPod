@@ -15,4 +15,8 @@
     <dimen name="episode_action2_frame_size">40dp</dimen>
     <dimen name="episode_action_progress_size">36dp</dimen>
     <dimen name="episode_action_text_size">14sp</dimen>
+    <dimen name="secondary_action_button_size">48dp</dimen>
+    <dimen name="secondary_action_icon_size">24dp</dimen>
+    <dimen name="secondary_action_progress_size">40dp</dimen>
+    <dimen name="horizontal_feed_item_height">96dp</dimen>
 </resources>

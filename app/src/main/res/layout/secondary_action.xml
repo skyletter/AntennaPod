@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/secondaryActionButton"
     android:layout_width="48dp"
-    android:layout_height="48dp"
+    android:layout_height="@dimen/secondary_action_button_size"
     android:layout_marginRight="12dp"
     android:layout_marginEnd="12dp"
     android:background="?selectableItemBackgroundBorderless"
@@ -15,16 +15,16 @@
 
     <ImageView
         android:id="@+id/secondaryActionIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/secondary_action_icon_size"
+        android:layout_height="@dimen/secondary_action_icon_size"
         android:layout_gravity="center"
         tools:ignore="ContentDescription"
         tools:src="@sample/secondaryaction" />
 
     <de.danoeh.antennapod.ui.common.CircularProgressBar
         android:id="@+id/secondaryActionProgress"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/secondary_action_progress_size"
+        android:layout_height="@dimen/secondary_action_progress_size"
         android:layout_gravity="center"
         app:foregroundColor="?attr/action_icon_color" />
 

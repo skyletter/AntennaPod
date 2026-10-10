@@ -3,4 +3,9 @@
     <style name="TextBottomNav" parent="TextAppearance.Material3.TitleSmall">
         <item name="android:textSize">@dimen/bottom_nav_text_size</item>
     </style>
+
+    <style name="Style.AntennaPod.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="materialThemeOverlay">@style/Theme.AntennaPod.Toolbar</item>
+        <item name="android:minHeight">76dp</item>
+    </style>
 </resources>
