@@ -38,8 +38,8 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="128dp"
-                        android:layout_height="128dp"
+                        android:layout_width="@dimen/home_section_card_width"
+                        android:layout_height="@dimen/home_section_card_width"
                         android:background="@color/image_readability_tint">
 
                         <de.danoeh.antennapod.ui.common.SquareImageView
@@ -51,8 +51,8 @@
                             tools:src="@tools:sample/avatars" />
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="@dimen/home_section_card_button_width"
+                            android:layout_height="@dimen/home_section_card_button_width"
                             android:layout_gravity="bottom|end"
                             android:layout_margin="4dp"
                             android:padding="4dp"
@@ -60,16 +60,16 @@
 
                         <de.danoeh.antennapod.ui.common.CircularProgressBar
                             android:id="@+id/circularProgressBar"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="@dimen/home_section_card_button_width"
+                            android:layout_height="@dimen/home_section_card_button_width"
                             android:layout_gravity="bottom|end"
                             android:layout_margin="4dp"
                             app:foregroundColor="?attr/colorOnPrimary" />
 
                         <ImageView
                             android:id="@+id/secondaryActionIcon"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="@dimen/home_section_card_button_width"
+                            android:layout_height="@dimen/home_section_card_button_width"
                             android:layout_gravity="bottom|end"
                             android:layout_margin="4dp"
                             android:clickable="true"
@@ -102,7 +102,7 @@
 
             <TextView
                 android:id="@+id/titleLabel"
-                android:layout_width="128dp"
+                android:layout_width="@dimen/home_section_card_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
@@ -110,7 +110,7 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="false"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="14sp"
+                android:textSize="@dimen/home_section_card_text_size"
                 tools:text="@sample/episodes.json/data/title" />
 
             <TextView
@@ -121,7 +121,7 @@
                 android:paddingHorizontal="4dp"
                 android:singleLine="true"
                 android:textAlignment="textStart"
-                android:textSize="14sp"
+                android:textSize="@dimen/home_section_card_text_size"
                 tools:text="@sample/episodes.json/data/published_at"
                 style="@style/AntennaPod.TextView.ListItemSecondaryTitle" />
 

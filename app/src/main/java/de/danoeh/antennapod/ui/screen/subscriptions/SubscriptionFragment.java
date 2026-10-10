@@ -73,7 +73,10 @@ public class SubscriptionFragment extends Fragment
             R.id.subscription_num_columns_2,
             R.id.subscription_num_columns_3,
             R.id.subscription_num_columns_4,
-            R.id.subscription_num_columns_5};
+            R.id.subscription_num_columns_5,
+            R.id.subscription_num_columns_6,
+            R.id.subscription_num_columns_7,
+            R.id.subscription_num_columns_8};
 
     private RecyclerView subscriptionRecycler;
     private SubscriptionsRecyclerAdapter subscriptionAdapter;
@@ -278,6 +281,15 @@ public class SubscriptionFragment extends Fragment
             return true;
         } else if (itemId == R.id.subscription_num_columns_5) {
             setColumnNumber(5);
+            return true;
+        } else if (itemId == R.id.subscription_num_columns_6) {
+            setColumnNumber(6);
+            return true;
+        } else if (itemId == R.id.subscription_num_columns_7) {
+            setColumnNumber(7);
+            return true;
+        } else if (itemId == R.id.subscription_num_columns_8) {
+            setColumnNumber(8);
             return true;
         } else if (itemId == R.id.action_search) {
             if (stateToShow == Feed.STATE_ARCHIVED) {

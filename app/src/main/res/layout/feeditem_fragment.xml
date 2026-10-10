@@ -111,8 +111,8 @@
 
                 <ImageView
                     android:id="@+id/butAction1Icon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/episode_action_icon_size"
+                    android:layout_height="@dimen/episode_action_icon_size"
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginTop="12dp"
@@ -124,6 +124,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textSize="@dimen/episode_action_text_size"
                     android:textColor="?android:attr/textColorPrimary"
                     tools:text="Button 1" />
 
@@ -139,24 +140,24 @@
                 android:gravity="center">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="@dimen/episode_action2_frame_size"
+                    android:layout_height="@dimen/episode_action2_frame_size"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:layout_gravity="bottom|end">
 
                     <de.danoeh.antennapod.ui.common.CircularProgressBar
                         android:id="@+id/circularProgressBar"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="@dimen/episode_action_progress_size"
+                        android:layout_height="@dimen/episode_action_progress_size"
                         android:layout_gravity="center"
                         android:visibility="gone"
                         app:foregroundColor="?android:attr/textColorPrimary" />
 
                     <ImageView
                         android:id="@+id/butAction2Icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="@dimen/episode_action_icon_size"
+                        android:layout_height="@dimen/episode_action_icon_size"
                         android:layout_gravity="center"
                         tools:src="@drawable/ic_settings" />
 
@@ -167,6 +168,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textSize="@dimen/episode_action_text_size"
                     android:textColor="?android:attr/textColorPrimary"
                     tools:text="Button 2" />
 

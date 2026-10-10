@@ -8,4 +8,11 @@
     <dimen name="bottom_nav_item_padding_top">12dp</dimen>
     <dimen name="bottom_nav_item_padding_bottom">4dp</dimen>
     <dimen name="mini_player_play_button_width">52dp</dimen>
+    <dimen name="home_section_card_width">128dp</dimen>
+    <dimen name="home_section_card_button_width">48dp</dimen>
+    <dimen name="home_section_card_text_size">14sp</dimen>
+    <dimen name="episode_action_icon_size">24dp</dimen>
+    <dimen name="episode_action2_frame_size">40dp</dimen>
+    <dimen name="episode_action_progress_size">36dp</dimen>
+    <dimen name="episode_action_text_size">14sp</dimen>
 </resources>

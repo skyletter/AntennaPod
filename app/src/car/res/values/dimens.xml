@@ -9,4 +9,11 @@
     <dimen name="audioplayer_playercontrols_length">64dp</dimen>
     <dimen name="audioplayer_playercontrols_length_big">88dp</dimen>
     <dimen name="audioplayer_playercontrols_margin">16dp</dimen>
+    <dimen name="home_section_card_width">200dp</dimen>
+    <dimen name="home_section_card_button_width">64dp</dimen>
+    <dimen name="home_section_card_text_size">17sp</dimen>
+    <dimen name="episode_action_icon_size">32dp</dimen>
+    <dimen name="episode_action2_frame_size">52dp</dimen>
+    <dimen name="episode_action_progress_size">48dp</dimen>
+    <dimen name="episode_action_text_size">18sp</dimen>
 </resources>
